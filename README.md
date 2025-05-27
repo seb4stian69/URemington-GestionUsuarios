@@ -13,20 +13,20 @@ El backend está organizado siguiendo los principios de Clean Architecture:
 src/main/java/com/uniremington/
 │
 ├── application/
-│   ├── dto/                  # Data Transfer Objects
-│   └── service/              # Casos de uso / lógica de aplicación
+│   ├── dto/                  # Objetos de transferencia de datos (DTO) para la comunicación entre capas
+│   └── service/              # Lógica de negocio y casos de uso (servicios con interfaces y/o implementaciones genéricas)
 │
 ├── domain/
-│   ├── model/                # Entidades de dominio puras
-│   └── repository/           # Interfaces de persistencia
+│   ├── model/                # Entidades de dominio puras, sin dependencia de frameworks
+│   └── repository/           # Interfaces que definen los puertos para persistencia (repositorios)
 │
 ├── infrastructure/
-│   ├── repository/           # Implementaciones JPA
-│   └── rest/                 # Controladores REST
+│   ├── repository/           # Adaptadores de persistencia: implementaciones JPA de los repositorios
+│   └── rest/                 # Adaptadores de entrada: controladores REST para exponer la API
 │
 └── shared/
-    ├── base/                 # Clases utilitarias genéricas
-    └── exceptions/           # Manejo de errores comunes
+    ├── base/                 # Clases base y utilidades genéricas reutilizables (servicios, repositorios, mapeos)
+    └── exceptions/           # Manejo centralizado de excepciones y errores comunes
 ```
 
 ---
