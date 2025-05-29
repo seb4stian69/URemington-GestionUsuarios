@@ -2,17 +2,18 @@ package org.uniremington.shared.util;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 import org.uniremington.application.dto.PersonaDto;
 import org.uniremington.domain.model.Persona;
 import org.uniremington.infrastructure.entity.PersonaEntity;
 
-@Mapper(componentModel = "cdi") // Para Quarkus
+@Mapper(componentModel = "cdi")
 public interface PersonaMapper {
 
-    @Mapping(target = "primerNombre", expression = "java(splitNombre(model.getNombres(), 0))")
-    @Mapping(target = "segundoNombre", expression = "java(splitNombre(model.getNombres(), 1))")
-    @Mapping(target = "primerApellido", expression = "java(splitNombre(model.getApellidos(), 0))")
-    @Mapping(target = "segundoApellido", expression = "java(splitNombre(model.getApellidos(), 1))")
+    @Mapping(target = "primerNombre", source = "nombres", qualifiedByName = "splitNombre0")
+    @Mapping(target = "segundoNombre", source = "nombres", qualifiedByName = "splitNombre1")
+    @Mapping(target = "primerApellido", source = "apellidos", qualifiedByName = "splitApellido0")
+    @Mapping(target = "segundoApellido", source = "apellidos", qualifiedByName = "splitApellido1")
     PersonaEntity toEntity(Persona model);
 
     @Mapping(target = "nombres", expression = "java(entity.getPrimerNombre() + \" \" + entity.getSegundoNombre())")
@@ -21,12 +22,10 @@ public interface PersonaMapper {
 
     Persona toModel(PersonaDto dto);
 
-    /* DTO */
-
-    @Mapping(target = "primerNombre", expression = "java(splitNombre(dto.getNombres(), 0))")
-    @Mapping(target = "segundoNombre", expression = "java(splitNombre(dto.getNombres(), 1))")
-    @Mapping(target = "primerApellido", expression = "java(splitNombre(dto.getApellidos(), 0))")
-    @Mapping(target = "segundoApellido", expression = "java(splitNombre(dto.getApellidos(), 1))")
+    @Mapping(target = "primerNombre", source = "nombres", qualifiedByName = "splitNombre0")
+    @Mapping(target = "segundoNombre", source = "nombres", qualifiedByName = "splitNombre1")
+    @Mapping(target = "primerApellido", source = "apellidos", qualifiedByName = "splitApellido0")
+    @Mapping(target = "segundoApellido", source = "apellidos", qualifiedByName = "splitApellido1")
     PersonaEntity toEntity(PersonaDto dto);
 
     @Mapping(target = "nombres", expression = "java(entity.getPrimerNombre() + \" \" + entity.getSegundoNombre())")
@@ -35,9 +34,21 @@ public interface PersonaMapper {
 
     PersonaDto toDto(Persona model);
 
-    /* Util Methods */
+    /* ------------------ Métodos auxiliares anotados para que MapStruct los reconozca por nombre ------------------ */
 
-    default String splitNombre(String full, int index) {
+    @Named("splitNombre0")
+    default String splitNombre0(String full) { return split(full, 0); }
+
+    @Named("splitNombre1")
+    default String splitNombre1(String full) { return split(full, 1); }
+
+    @Named("splitApellido0")
+    default String splitApellido0(String full) { return split(full, 0); }
+
+    @Named("splitApellido1")
+    default String splitApellido1(String full) { return split(full, 1); }
+
+    default String split(String full, int index) {
         if (full == null || full.isBlank()) return null;
         String[] parts = full.trim().split(" ");
         return parts.length > index ? parts[index] : "";

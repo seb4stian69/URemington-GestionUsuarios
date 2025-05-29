@@ -3,6 +3,7 @@ package org.uniremington.infrastructure.repository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.uniremington.domain.model.Persona;
@@ -40,20 +41,27 @@ public class JpaPersonaRepository implements PersonaRepository {
     @Transactional
     public Persona save(Persona persona) {
         PersonaEntity entity = personaMapper.toEntity(persona);
+
         if (entity.getId() == null) {
             em.persist(entity);
         } else {
+            PersonaEntity existing = em.find(PersonaEntity.class, entity.getId());
+            if (existing == null) {
+                throw new EntityNotFoundException("Persona con ID " + entity.getId() + " no encontrada");
+            }
             entity = em.merge(entity);
         }
+
         return personaMapper.toModel(entity);
     }
+
 
     @Override
     @Transactional
     public void deleteById(Long id) {
         PersonaEntity entity = em.find(PersonaEntity.class, id);
         if (entity != null) {
-            entity.setEstado("INACTIVO"); // borrado lógico
+            entity.setEstado(false);
             em.merge(entity);
         }
     }
