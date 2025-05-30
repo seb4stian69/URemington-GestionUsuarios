@@ -1,4 +1,6 @@
 package org.uniremington.domain.repository;
 
-public class PersonaRepository {
-}
+import org.uniremington.domain.model.Persona;
+import org.uniremington.shared.base.BaseRepository;
+
+public interface PersonaRepository extends BaseRepository<Persona, Long> {}
