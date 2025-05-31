@@ -5,30 +5,35 @@ import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
-import org.uniremington.domain.model.Persona;
-import org.uniremington.domain.repository.PersonaRepository;
-import org.uniremington.infrastructure.entity.PersonaEntity;
-import org.uniremington.shared.util.PersonaMapper;
+import org.uniremington.domain.model.Perfil;
+import org.uniremington.domain.repository.PerfilRepository;
+import org.uniremington.infrastructure.entity.PerfilEntity;
+import org.uniremington.shared.exception.HashPasswordException;
+import org.uniremington.shared.util.PasswordHasher;
+import org.uniremington.shared.util.PerfilMapper;
+
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
-public class JpaPersonaRepository implements PersonaRepository {
+public class JpaPerfilRepository implements PerfilRepository {
 
     @PersistenceContext EntityManager em;
 
-    @Inject /*->*/ PersonaMapper mapper;
+    @Inject /*->*/ PerfilMapper mapper;
 
     @Override
-    public Optional<Persona> findById(Long id) {
-        PersonaEntity entity = em.find(PersonaEntity.class, id);
+    public Optional<Perfil> findById(Long id) {
+        PerfilEntity entity = em.find(PerfilEntity.class, id);
         return Optional.ofNullable(entity).map(mapper::toModel);
     }
 
     @Override
-    public List<Persona> findAll() {
-        return em.createQuery("SELECT p FROM PersonaEntity p", PersonaEntity.class)
+    public List<Perfil> findAll() {
+        return em.createQuery("SELECT p FROM PerfilEntity p", PerfilEntity.class)
                 .getResultList()
                 .stream()
                 .map(mapper::toModel)
@@ -37,15 +42,15 @@ public class JpaPersonaRepository implements PersonaRepository {
 
     @Override
     @Transactional
-    public Persona save(Persona usuario) {
+    public Perfil save(Perfil usuario) {
 
-        PersonaEntity entity = mapper.toEntity(usuario);
+        PerfilEntity entity = mapper.toEntity(usuario);
 
         if (entity.getId() == null) {
-            throw new IllegalArgumentException("La cédula no puede ser nula al guardar una persona");
+            throw new IllegalArgumentException("La cédula no puede ser nula al guardar un perfil");
         }
 
-        PersonaEntity existing = em.find(PersonaEntity.class, entity.getId());
+        PerfilEntity existing = em.find(PerfilEntity.class, entity.getId());
 
         if (existing == null) {
             em.persist(entity);
@@ -58,11 +63,10 @@ public class JpaPersonaRepository implements PersonaRepository {
     }
 
 
-
     @Override
     @Transactional
     public void deleteById(Long id) {
-        PersonaEntity entity = em.find(PersonaEntity.class, id);
+        PerfilEntity entity = em.find(PerfilEntity.class, id);
         if (entity != null) {
             entity.setEstado(false);
             em.merge(entity);

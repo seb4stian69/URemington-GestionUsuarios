@@ -13,9 +13,8 @@ import java.util.Date;
 @RegisterForReflection
 @Data/**/@Getter@Setter
 public class PersonaDto {
-    private Long id;
 
-    private Long cedula;
+    private Long id;
 
     @NotBlank(message = "El nombre no puede estar vacío")
     private String nombres;
@@ -34,4 +33,5 @@ public class PersonaDto {
     private Date fechaNacimiento;
 
     private Boolean estado;
+
 }

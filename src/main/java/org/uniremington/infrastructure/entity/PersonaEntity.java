@@ -10,10 +10,8 @@ import java.util.Date;
 public class PersonaEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idPersona") /*->*/ private Long id;
 
-    @Column(name = "cedula") /*->*/ private Long cedula;
     @Column(name = "nom1") /*->*/ private String primerNombre;
     @Column(name = "nom2") /*->*/ private String segundoNombre;
     @Column(name = "apell1") /*->*/ private String primerApellido;
@@ -24,6 +22,9 @@ public class PersonaEntity {
     @Column(name = "correo") /*->*/ private String correo;
     @Column(name = "fecha_nac") @Temporal(TemporalType.DATE) /*->*/ private Date fechaNacimiento;
     @Column(name = "estado") /*->*/ private Boolean estado;
+
+        @OneToOne(mappedBy = "persona", cascade = CascadeType.ALL)
+    private UsuarioEntity usuario;
 
 }
 

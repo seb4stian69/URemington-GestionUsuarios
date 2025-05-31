@@ -7,26 +7,25 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import org.uniremington.application.dto.PersonaDto;
-import org.uniremington.application.service.PersonaService;
-import org.uniremington.domain.model.Persona;
+import org.uniremington.application.dto.UsuarioDto;
+import org.uniremington.application.service.UsuarioService;
+import org.uniremington.domain.model.Usuario;
 import org.uniremington.shared.exception.NotFoundException;
-import org.uniremington.shared.util.PersonaMapper;
+import org.uniremington.shared.util.UsuarioMapper;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Path("/personas")
-public class PersonaResource {
-
-    @Inject /*->*/ PersonaService service;
-    @Inject /*->*/ PersonaMapper mapper;
+@Path("/usuario")
+public class UsuarioResource {
+    @Inject /*->*/ UsuarioService service;
+    @Inject /*->*/ UsuarioMapper mapper;
 
     @GET
     @Produces({MediaType.APPLICATION_JSON})
     public Response findAll() {
 
-        List<PersonaDto> result = service.findAll().stream()
+        List<UsuarioDto> result = service.findAll().stream()
                 .map(mapper::toDto)
                 .collect(Collectors.toList());
 
@@ -48,10 +47,10 @@ public class PersonaResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response findById(@PathParam("id") Long id) {
 
-        PersonaDto persona = service.findById(id)
+        UsuarioDto persona = service.findById(id)
             .map(mapper::toDto)
             .orElseThrow(
-                () -> new NotFoundException("Persona con ID " + id + " no encontrada")
+                () -> new NotFoundException("Usuario con ID " + id + " no encontrada")
             );
 
         ObjectMapper mapper = new ObjectMapper();
@@ -67,14 +66,38 @@ public class PersonaResource {
 
     }
 
+    @GET
+    @Path("/login")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response login(String user, String contrasena) {
+
+        service.login(user, contrasena)
+            .map(mapper::toDto)
+            .orElseThrow(
+                () -> new NotFoundException("Nombre de usuario o contraseña incorrectos.")
+            );
+
+        ObjectMapper mapper = new ObjectMapper();
+        String json;
+
+        try {
+            json = mapper.writeValueAsString("ok");
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+        return Response.ok(json).build();
+
+    }
+
     @POST
     @PermitAll
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response create(PersonaDto dto) {
+    public Response create(UsuarioDto dto) {
 
-        Persona model = mapper.toModel(dto);
-        Persona saved = service.save(model);
+        Usuario model = mapper.toModel(dto);
+        Usuario saved = service.save(model);
 
         if (saved == null || saved.getId() == null) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
@@ -82,7 +105,7 @@ public class PersonaResource {
                     .build();
         }
 
-        PersonaDto savedDto = mapper.toDto(saved);
+        UsuarioDto savedDto = mapper.toDto(saved);
 
         return Response.ok(savedDto)
                 .entity(savedDto)
@@ -98,11 +121,11 @@ public class PersonaResource {
         service.findById(id)
                 .map(mapper::toDto)
                 .orElseThrow(
-                        () -> new NotFoundException("Persona con ID " + id + " no encontrada")
+                        () -> new NotFoundException("Usuario con ID " + id + " no encontrada")
                 );
 
         service.deleteById(id);
-        return Response.ok("Persona eliminada con éxito").build();
+        return Response.ok("Usuario eliminada con éxito").build();
 
     }
 
