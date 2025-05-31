@@ -10,7 +10,6 @@ import java.util.Date;
 @EqualsAndHashCode(callSuper = true)
 public class Persona extends BaseEntity {
     private Long id;
-    private Long cedula;
     private String nombres;
     private String apellidos;
     private String direccion;

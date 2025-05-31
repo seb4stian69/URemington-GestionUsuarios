@@ -2,35 +2,35 @@ package org.uniremington.application.service;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import org.uniremington.application.service.interfaces.IPersona;
-import org.uniremington.domain.model.Persona;
-import org.uniremington.domain.repository.PersonaRepository;
+import org.uniremington.application.service.interfaces.IPerfil;
+import org.uniremington.domain.model.Perfil;
+import org.uniremington.domain.repository.PerfilRepository;
 
 import java.util.List;
 import java.util.Optional;
 
 @ApplicationScoped
-public class PersonaService implements IPersona {
+public class PerfilService implements IPerfil {
 
-    PersonaRepository repository;
+    PerfilRepository repository;
 
     @Inject
-    public PersonaService(PersonaRepository repository) {
+    public PerfilService(PerfilRepository repository) {
         this.repository = repository;
     }
 
     @Override
-    public Optional<Persona> findById(Long id) {
+    public Optional<Perfil> findById(Long id) {
         return repository.findById(id);
     }
 
     @Override
-    public List<Persona> findAll() {
+    public List<Perfil> findAll() {
         return repository.findAll();
     }
 
     @Override
-    public Persona save(Persona entity) {
+    public Perfil save(Perfil entity) {
         return repository.save(entity);
     }
 
@@ -38,5 +38,4 @@ public class PersonaService implements IPersona {
     public void deleteById(Long id) {
         repository.deleteById(id);
     }
-
 }

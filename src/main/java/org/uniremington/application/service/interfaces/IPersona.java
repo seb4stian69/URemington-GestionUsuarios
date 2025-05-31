@@ -1,4 +1,4 @@
-package org.uniremington.application.service;
+package org.uniremington.application.service.interfaces;
 
 import org.uniremington.domain.model.Persona;
 
