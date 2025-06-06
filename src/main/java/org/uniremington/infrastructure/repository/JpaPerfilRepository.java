@@ -11,6 +11,7 @@ import org.uniremington.infrastructure.entity.PerfilEntity;
 import org.uniremington.shared.util.PerfilMapper;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @ApplicationScoped
@@ -45,13 +46,7 @@ public class JpaPerfilRepository implements PerfilRepository {
 
         PerfilEntity entity = mapper.toEntity(usuario);
 
-        if (entity.getId() == null) {
-            throw new IllegalArgumentException("La cédula no puede ser nula al guardar un perfil");
-        }
-
-        PerfilEntity existing = em.find(PerfilEntity.class, entity.getId());
-
-        if (existing == null) {
+        if (Objects.equals(action, "save")) {
             em.persist(entity);
         } else {
             entity = em.merge(entity);
@@ -66,10 +61,8 @@ public class JpaPerfilRepository implements PerfilRepository {
     @Transactional
     public void deleteById(Long id) {
         PerfilEntity entity = em.find(PerfilEntity.class, id);
-        if (entity != null) {
-            entity.setEstado(false);
-            em.merge(entity);
-        }
+        entity.setEstado(false);
+        em.merge(entity);
     }
 
 }
