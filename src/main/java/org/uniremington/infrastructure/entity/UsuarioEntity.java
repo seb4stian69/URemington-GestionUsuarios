@@ -21,6 +21,9 @@ public class UsuarioEntity {
     @Column(name = "estado")
     private Boolean estado;
 
+    @Column(name = "salt")
+    private String salt;
+
     @MapsId
     @OneToOne
     @JoinColumn(name = "idusuario", referencedColumnName = "idPersona")
@@ -28,6 +31,6 @@ public class UsuarioEntity {
 
     @ManyToOne
     @JoinColumn(name = "idperfil", nullable = false)
-    private PerfilEntity perfil;
+    private PerfilEntity idperfil;
 
 }
