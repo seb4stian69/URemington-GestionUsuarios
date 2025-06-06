@@ -31,7 +31,7 @@ public class PersonaService implements IPersona {
 
     @Override
     public Persona save(Persona entity) {
-        return repository.save(entity);
+        return repository.save(entity, "");
     }
 
     @Override

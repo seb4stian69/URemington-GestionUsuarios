@@ -35,7 +35,7 @@ public class UsuarioService implements IUsuarios {
 
     @Override
     public Usuario save(Usuario entity) {
-        return repository.save(entity);
+        return repository.save(entity, "");
     }
 
     @Override

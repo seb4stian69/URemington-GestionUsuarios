@@ -85,7 +85,7 @@ public class JpaUsuarioRepository implements UsuarioRepository {
             Usuario updateUser = this.mapper.toModel(usuario);
             updateUser.setContrasena(newPassword);
             updateUser.setIdPerfil(usuario.getIdperfil().getId().toString());
-            this.save(updateUser);
+            this.save(updateUser, "update");
 
             this.mailer.enviarCorreo(username, newPassword, persona.getCorreo());
 
@@ -126,7 +126,7 @@ public class JpaUsuarioRepository implements UsuarioRepository {
 
     @Override
     @Transactional
-    public Usuario save(Usuario usuario) {
+    public Usuario save(Usuario usuario, String action) {
 
         if (usuario.getId() == null) {
             throw new IllegalArgumentException("El ID de la persona (usuario) no puede ser nulo");

@@ -20,7 +20,7 @@ public abstract class BaseService<T extends BaseEntity, ID> {
             );
     }
 
-    public T save(T entity) { return repository.save(entity); }
+    public T save(T entity, String action) { return repository.save(entity, action); }
 
     public void deleteById(ID id) {
         T entity = findById(id);

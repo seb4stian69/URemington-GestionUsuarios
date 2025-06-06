@@ -41,7 +41,7 @@ public class JpaPerfilRepository implements PerfilRepository {
 
     @Override
     @Transactional
-    public Perfil save(Perfil usuario) {
+    public Perfil save(Perfil usuario, String action) {
 
         PerfilEntity entity = mapper.toEntity(usuario);
 

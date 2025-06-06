@@ -38,7 +38,7 @@ public class JpaPersonaRepository implements PersonaRepository {
 
     @Override
     @Transactional
-    public Persona save(Persona usuario) {
+    public Persona save(Persona usuario, String action) {
 
         PersonaEntity entity = mapper.toEntity(usuario);
 
