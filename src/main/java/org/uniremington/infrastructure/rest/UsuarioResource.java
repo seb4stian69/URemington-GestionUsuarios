@@ -7,8 +7,8 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import org.uniremington.application.dto.LoginDTO;
-import org.uniremington.application.dto.SendEmailDto;
+import org.uniremington.application.dto.LoginDto;
+import org.uniremington.application.dto.ResetPasswordDto;
 import org.uniremington.application.dto.UsuarioDto;
 import org.uniremington.application.service.UsuarioService;
 import org.uniremington.domain.model.Usuario;
@@ -73,7 +73,7 @@ public class UsuarioResource {
     @POST
     @Path("/login")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response login(LoginDTO dto) {
+    public Response login(LoginDto dto) {
 
         Usuario user = service.login(dto.getUsername())
             .orElseThrow(
@@ -157,7 +157,7 @@ public class UsuarioResource {
     @Path("/reset-password")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response sendMail(SendEmailDto body) {
+    public Response sendMail(ResetPasswordDto body) {
 
         ApiResponse result = service.resetPassword(body.getUsername()   );
 
