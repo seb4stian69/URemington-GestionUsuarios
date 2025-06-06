@@ -6,7 +6,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
-import org.uniremington.domain.model.Perfil;
 import org.uniremington.domain.model.Usuario;
 import org.uniremington.domain.repository.UsuarioRepository;
 import org.uniremington.infrastructure.entity.PerfilEntity;
@@ -20,7 +19,6 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class JpaUsuarioRepository implements UsuarioRepository {

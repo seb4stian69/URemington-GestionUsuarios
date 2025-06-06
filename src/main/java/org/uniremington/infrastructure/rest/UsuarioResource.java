@@ -20,7 +20,6 @@ import org.uniremington.shared.util.UsuarioMapper;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Path("/usuario")
