@@ -27,8 +27,7 @@ public class JpaUsuarioRepository implements UsuarioRepository {
     UsuarioMapper mapper;
     CorreoService mailer;
 
-    @Inject
-    public JpaUsuarioRepository (UsuarioMapper mapper, CorreoService mailer){
+    @Inject JpaUsuarioRepository (UsuarioMapper mapper, CorreoService mailer){
         this.mapper = mapper;
         this.mailer = mailer;
     }
