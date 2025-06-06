@@ -19,7 +19,11 @@ public class JpaPerfilRepository implements PerfilRepository {
 
     @PersistenceContext EntityManager em;
 
-    @Inject /*->*/ PerfilMapper mapper;
+    PerfilMapper mapper;
+
+    @Inject JpaPerfilRepository(PerfilMapper mapper){
+        this.mapper = mapper;
+    }
 
     @Override
     public Optional<Perfil> findById(Long id) {
