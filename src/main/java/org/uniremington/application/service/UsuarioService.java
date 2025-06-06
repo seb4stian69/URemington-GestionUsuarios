@@ -5,6 +5,7 @@ import jakarta.inject.Inject;
 import org.uniremington.application.service.interfaces.IUsuarios;
 import org.uniremington.domain.model.Usuario;
 import org.uniremington.domain.repository.UsuarioRepository;
+import org.uniremington.shared.util.ApiResponse;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,7 +26,7 @@ public class UsuarioService implements IUsuarios {
     }
 
     @Override
-    public Optional<Usuario> login(String user, String contrasena) { return repository.login(user, contrasena); }
+    public Optional<Usuario> login(String user) { return repository.login(user); }
 
     @Override
     public List<Usuario> findAll() {
@@ -40,6 +41,11 @@ public class UsuarioService implements IUsuarios {
     @Override
     public void deleteById(Long id) {
         repository.deleteById(id);
+    }
+
+    @Override
+    public ApiResponse resetPassword(String username) {
+        return repository.resetPassword(username);
     }
 
 }
