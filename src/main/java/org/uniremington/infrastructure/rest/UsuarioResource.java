@@ -75,7 +75,7 @@ public class UsuarioResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response login(LoginDto dto) {
 
-        Usuario user = service.login(dto.getUsername())
+        Usuario user = service.getByUser(dto.getUsername())
             .orElseThrow(
                 () -> new NotFoundException("Nombre de usuario incorrectos.")
             );

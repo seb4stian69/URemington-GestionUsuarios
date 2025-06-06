@@ -39,7 +39,7 @@ public class JpaUsuarioRepository implements UsuarioRepository {
     }
 
     @Override
-    public Optional<Usuario> login(String user) {
+    public Optional<Usuario> getByUser(String user) {
 
         try {
 
