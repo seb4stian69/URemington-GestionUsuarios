@@ -33,7 +33,7 @@ public class JpaPersonaRepository implements PersonaRepository {
                 .getResultList()
                 .stream()
                 .map(mapper::toModel)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
