@@ -12,7 +12,6 @@ import org.uniremington.shared.util.PerfilMapper;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class JpaPerfilRepository implements PerfilRepository {
@@ -37,7 +36,7 @@ public class JpaPerfilRepository implements PerfilRepository {
                 .getResultList()
                 .stream()
                 .map(mapper::toModel)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
