@@ -1,21 +1,19 @@
-package org.uniremington.shared.util;
+package org.uniremington.application.service;
 
-import io.quarkus.mailer.Mail;
-import io.quarkus.mailer.Mailer;
-import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import org.uniremington.application.service.interfaces.IMailer;
+import org.uniremington.domain.repository.MailerRepository;
 
-@ApplicationScoped
-public class CorreoService {
+public class MailerService implements IMailer {
 
-    Mailer mailer;
+    MailerRepository repository;
 
-    @Inject
-    public CorreoService(Mailer mailer){
-        this.mailer = mailer;
+    @Inject MailerService(MailerRepository repository) {
+        this.repository = repository;
     }
 
-    public void enviarCorreo(String username, String password, String toEmail) {
+    @Override
+    public void sendReset(String template, String message, String addreses, String username, String password) {
 
         String html = "<html>\n" +
                 "  <body style=\"font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;\">\n" +
@@ -28,13 +26,8 @@ public class CorreoService {
                 "  </body>\n" +
                 "</html>";
 
-        mailer.send(
-            Mail.withHtml(
-                toEmail, // Reemplaza por el destinatario real
-                "Clave de acceso recuperada",
-                html
-            )
-        );
+        repository.send(html, message, addreses);
+
     }
 
 }
