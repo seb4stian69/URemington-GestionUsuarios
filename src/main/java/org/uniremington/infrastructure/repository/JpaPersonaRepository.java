@@ -9,6 +9,7 @@ import org.uniremington.domain.model.Persona;
 import org.uniremington.domain.repository.PersonaRepository;
 import org.uniremington.infrastructure.entity.PersonaEntity;
 import org.uniremington.shared.util.PersonaMapper;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;

@@ -21,7 +21,7 @@ public class PerfilEntity {
     @Column(name = "estado")
     private Boolean estado;
 
-    @OneToMany(mappedBy = "perfil", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "idperfil", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UsuarioEntity> usuarios = new ArrayList<>();
 
 }

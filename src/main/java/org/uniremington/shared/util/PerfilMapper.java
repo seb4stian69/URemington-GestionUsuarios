@@ -1,8 +1,6 @@
 package org.uniremington.shared.util;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Named;
 import org.uniremington.application.dto.PerfilDto;
 import org.uniremington.domain.model.Perfil;
 import org.uniremington.infrastructure.entity.PerfilEntity;

@@ -1,8 +1,6 @@
 package org.uniremington.shared.util;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Named;
 import org.uniremington.application.dto.UsuarioDto;
 import org.uniremington.domain.model.Usuario;
 import org.uniremington.infrastructure.entity.UsuarioEntity;
