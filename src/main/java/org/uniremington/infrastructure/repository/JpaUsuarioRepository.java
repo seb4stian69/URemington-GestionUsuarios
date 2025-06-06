@@ -44,9 +44,10 @@ public class JpaUsuarioRepository implements UsuarioRepository {
         try {
 
             UsuarioEntity usuario = em.createQuery(
-                "SELECT u FROM UsuarioEntity u WHERE u.nombreUsuario = :nombreUsuario", UsuarioEntity.class)
-                .setParameter("nombreUsuario", user)
-                .getSingleResult();
+
+                    "SELECT u FROM UsuarioEntity u WHERE u.nombreUsuario = :nombreUsuario", UsuarioEntity.class
+
+            ).setParameter("nombreUsuario", user).getSingleResult();
 
             Usuario usRes = mapper.toModel(usuario);
             usRes.setIdPerfil(usuario.getIdperfil().getId().toString());
@@ -98,7 +99,6 @@ public class JpaUsuarioRepository implements UsuarioRepository {
         }
     }
 
-
     @Override
     public List<Usuario> findAll() {
 
@@ -107,20 +107,19 @@ public class JpaUsuarioRepository implements UsuarioRepository {
 
         List<Usuario> response = new ArrayList<>();
 
-        list.forEach(user->{
-            response.add(
-                new Usuario(
-                    user.getId(),
-                    user.getNombreUsuario(),
-                    user.getContrasena(),
-                    user.getIdperfil().getId().toString(),
-                    user.getSalt(),
-                    user.getEstado()
-                )
-            );
-        });
+        list.forEach(user-> response.add(
+            new Usuario(
+                user.getId(),
+                user.getNombreUsuario(),
+                user.getContrasena(),
+                user.getIdperfil().getId().toString(),
+                user.getSalt(),
+                user.getEstado()
+            )
+        ));
 
         return response;
+
     }
 
     @Override
@@ -199,7 +198,6 @@ public class JpaUsuarioRepository implements UsuarioRepository {
         );
 
     }
-
 
     @Override
     @Transactional
