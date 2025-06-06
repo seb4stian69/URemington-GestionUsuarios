@@ -8,12 +8,8 @@ import jakarta.transaction.Transactional;
 import org.uniremington.domain.model.Perfil;
 import org.uniremington.domain.repository.PerfilRepository;
 import org.uniremington.infrastructure.entity.PerfilEntity;
-import org.uniremington.shared.exception.HashPasswordException;
-import org.uniremington.shared.util.PasswordHasher;
 import org.uniremington.shared.util.PerfilMapper;
 
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
