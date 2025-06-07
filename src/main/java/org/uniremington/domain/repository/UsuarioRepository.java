@@ -7,6 +7,6 @@ import org.uniremington.shared.util.ApiResponse;
 import java.util.Optional;
 
 public interface UsuarioRepository extends BaseRepository<Usuario, Long> {
-    Optional<Usuario> getByUser(String user);
-    ApiResponse resetPassword(String username);
+    Optional<Usuario> login(Usuario user);
+    ApiResponse resetPassword(String username, Usuario usuario, String correo, String newPassword);
 }

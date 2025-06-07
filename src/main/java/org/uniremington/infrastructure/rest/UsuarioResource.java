@@ -75,26 +75,24 @@ public class UsuarioResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response login(LoginDto dto) {
 
-        Usuario user = service.getByUser(dto.getUsername())
-            .orElseThrow(
-                () -> new NotFoundException("Nombre de usuario incorrectos.")
-            );
+        Usuario queryUser = new Usuario();
+        queryUser.setNombreUsuario(dto.getUsername());
+        queryUser.setContrasena(dto.getPassword());
+        queryUser.setSalt(dto.getSalt());
 
-        try {
-            if(PasswordHasher.hashPassword(dto.getPassword(), user.getSalt()).equals(user.getContrasena())){
-                ObjectMapper mapper = new ObjectMapper();
-                String json;
+        if(service.login(queryUser)){
 
-                try {
-                    json = mapper.writeValueAsString(user);
-                } catch (JsonProcessingException e) {
-                    throw new RuntimeException(e);
-                }
+            ObjectMapper mapper = new ObjectMapper();
+            String json;
 
-                return Response.ok(json).build();
+            try {
+                json = mapper.writeValueAsString("Login Exitoso");
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
             }
-        } catch (NoSuchAlgorithmException|InvalidKeySpecException e) {
-            throw new RuntimeException(e);
+
+            return Response.ok(json).build();
+
         }
 
         return Response.serverError().build();

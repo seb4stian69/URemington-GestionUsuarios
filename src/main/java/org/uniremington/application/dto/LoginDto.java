@@ -14,4 +14,6 @@ public class LoginDto {
     String username;
     @NotBlank(message = "El password no puede estar vacío")
     String password;
+    @NotBlank(message = "El salt no puede estar vacío")
+    String salt;
 }

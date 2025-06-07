@@ -25,7 +25,7 @@ public abstract class BaseService<T extends BaseEntity, ID> {
     public void deleteById(ID id) {
         T entity = findById(id);
         entity.setEstado(false);
-        save(entity);
+        save(entity, "udpate");
     }
 
 }
