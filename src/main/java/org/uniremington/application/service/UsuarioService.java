@@ -3,7 +3,6 @@ package org.uniremington.application.service;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.uniremington.application.service.interfaces.IUsuarios;
-import org.uniremington.domain.model.Perfil;
 import org.uniremington.domain.model.Persona;
 import org.uniremington.domain.model.Usuario;
 import org.uniremington.domain.repository.PersonaRepository;
