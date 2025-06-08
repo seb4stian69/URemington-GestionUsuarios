@@ -1,10 +1,14 @@
 package org.uniremington.infrastructure.rest;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.security.PermitAll;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.*;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.uniremington.application.dto.LoginDto;
@@ -23,13 +27,20 @@ import org.uniremington.shared.util.UsuarioMapper;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Path("/usuario")
 public class UsuarioResource {
 
-    @Inject UsuarioService service;
-    @Inject UsuarioMapper mapper;
+    private static final String NAMECLASS = "UsuarioResource.class";
+    private static final String RESPONSE = "response";
+
+    UsuarioService service;
+    UsuarioMapper mapper;
+
+    @Inject UsuarioResource(UsuarioService service, UsuarioMapper mapper){
+        this.service = service;
+        this.mapper = mapper;
+    }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -44,7 +55,7 @@ public class UsuarioResource {
             response = new BaseResponse<>(null, ex.getBaseError());
             return Response.status(ex.getCodigoHttp()).entity(response).build();
         } catch (Exception ex) {
-            BaseError error = MicroServiceException.procesar(ex, "UsuarioResource.class");
+            BaseError error = MicroServiceException.procesar(ex, NAMECLASS);
             response = new BaseResponse<>(null, error);
             return Response.serverError().entity(response).build();
         }
@@ -58,7 +69,7 @@ public class UsuarioResource {
 
         try {
             Usuario usuario = service.findById(id)
-                    .orElseThrow(() -> new NotFoundException("Usuario con ID " + id + " no encontrado", "UsuarioResource.class"));
+                    .orElseThrow(() -> new NotFoundException("Usuario con ID " + id + " no encontrado", NAMECLASS));
 
             response = new BaseResponse<>(null, usuario, new BaseError());
             return Response.ok(response).build();
@@ -66,7 +77,7 @@ public class UsuarioResource {
             response = new BaseResponse<>(null, ex.getBaseError());
             return Response.status(ex.getCodigoHttp()).entity(response).build();
         } catch (Exception ex) {
-            BaseError error = MicroServiceException.procesar(ex, "UsuarioResource.class");
+            BaseError error = MicroServiceException.procesar(ex, NAMECLASS);
             response = new BaseResponse<>(null, error);
             return Response.serverError().entity(response).build();
         }
@@ -88,18 +99,18 @@ public class UsuarioResource {
         try {
             if (service.login(requestUser)) {
                 Map<String, String> body = new HashMap<>();
-                body.put("response", "Login exitoso");
+                body.put(RESPONSE, "Login exitoso");
                 response = new BaseResponse<>(request.getHeader(), body, new BaseError());
                 return Response.ok(response).build();
             } else {
-                throw new NotFoundException("Credenciales inválidas.", "UsuarioResource.class");
+                throw new NotFoundException("Credenciales inválidas.", NAMECLASS);
             }
 
         } catch (MicroServiceException ex) {
             response = new BaseResponse<>(request.getHeader(), ex.getBaseError());
             return Response.status(ex.getCodigoHttp()).entity(response).build();
         } catch (Exception ex) {
-            BaseError baseError = MicroServiceException.procesar(ex, "UsuarioResource.class");
+            BaseError baseError = MicroServiceException.procesar(ex, NAMECLASS);
             response = new BaseResponse<>(request.getHeader(), baseError);
             return Response.serverError().entity(response).build();
         }
@@ -116,7 +127,7 @@ public class UsuarioResource {
 
         try {
             if (dto.getIdPersona() == null) {
-                BaseError error = new BaseError("400", "El ID de la persona es obligatorio", "UsuarioResource.class");
+                BaseError error = new BaseError("400", "El ID de la persona es obligatorio", NAMECLASS);
                 response = new BaseResponse<>(null, error);
                 return Response.status(Response.Status.BAD_REQUEST).entity(response).build();
             }
@@ -126,7 +137,7 @@ public class UsuarioResource {
 
             Usuario saved = service.save(model);
             if (saved == null || saved.getId() == null) {
-                BaseError error = new BaseError("500", "No se pudo guardar el usuario", "UsuarioResource.class");
+                BaseError error = new BaseError("500", "No se pudo guardar el usuario", NAMECLASS);
                 response = new BaseResponse<>(null, error);
                 return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(response).build();
             }
@@ -136,7 +147,7 @@ public class UsuarioResource {
             return Response.ok(response).build();
 
         } catch (Exception ex) {
-            BaseError error = MicroServiceException.procesar(ex, "UsuarioResource.class");
+            BaseError error = MicroServiceException.procesar(ex, NAMECLASS);
             response = new BaseResponse<>(null, error);
             return Response.serverError().entity(response).build();
         }
@@ -151,13 +162,13 @@ public class UsuarioResource {
         BaseResponse<Map<String, String>> response;
 
         try {
-            service.findById(id)
-                    .orElseThrow(() -> new NotFoundException("Usuario con ID " + id + " no encontrado", "UsuarioResource.class"));
+            Usuario usuario = service.findById(id)
+                    .orElseThrow(() -> new NotFoundException("Usuario con ID " + id + " no encontrado", NAMECLASS));
 
-            service.deleteById(id);
+            service.deleteById(usuario.getId());
 
             Map<String, String> body = new HashMap<>();
-            body.put("response", "Usuario eliminado con éxito");
+            body.put(RESPONSE, "Usuario eliminado con éxito");
 
             response = new BaseResponse<>(null, body, new BaseError());
             return Response.ok(response).build();
@@ -166,7 +177,7 @@ public class UsuarioResource {
             response = new BaseResponse<>(null, ex.getBaseError());
             return Response.status(ex.getCodigoHttp()).entity(response).build();
         } catch (Exception ex) {
-            BaseError error = MicroServiceException.procesar(ex, "UsuarioResource.class");
+            BaseError error = MicroServiceException.procesar(ex, NAMECLASS);
             response = new BaseResponse<>(null, error);
             return Response.serverError().entity(response).build();
         }
@@ -184,29 +195,29 @@ public class UsuarioResource {
 
             if (result.getMessage().equalsIgnoreCase("Usuario no encontrado.")
                     || result.getMessage().contains("no tiene un correo")) {
-                BaseError error = new BaseError("404", result.getMessage(), "UsuarioResource.class");
+                BaseError error = new BaseError("404", result.getMessage(), NAMECLASS);
                 response = new BaseResponse<>(null, error);
                 return Response.status(Response.Status.NOT_FOUND).entity(response).build();
             }
 
             if (!result.isSuccess()) {
-                BaseError error = new BaseError("400", result.getMessage(), "UsuarioResource.class");
+                BaseError error = new BaseError("400", result.getMessage(), NAMECLASS);
                 response = new BaseResponse<>(null, error);
                 return Response.status(Response.Status.BAD_REQUEST).entity(response).build();
             }
 
             Map<String, String> bodyMap = new HashMap<>();
-            bodyMap.put("response", result.getMessage());
+            bodyMap.put(RESPONSE, result.getMessage());
 
             response = new BaseResponse<>(null, bodyMap, new BaseError());
             return Response.ok(response).build();
 
         } catch (Exception ex) {
-            BaseError error = MicroServiceException.procesar(ex, "UsuarioResource.class");
+            BaseError error = MicroServiceException.procesar(ex, NAMECLASS);
             response = new BaseResponse<>(null, error);
             return Response.serverError().entity(response).build();
         }
-        
+
     }
 
 }
