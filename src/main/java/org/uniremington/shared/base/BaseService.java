@@ -16,7 +16,7 @@ public abstract class BaseService<T extends BaseEntity, ID> {
         return repository
             .findById(id)
             .orElseThrow( () ->
-                new NotFoundException("Entidad no encontrada con id: " + id)
+                new NotFoundException("Entidad no encontrada con id: " + id, "BaseService.class")
             );
     }
 

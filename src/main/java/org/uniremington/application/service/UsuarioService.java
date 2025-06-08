@@ -23,6 +23,7 @@ public class UsuarioService implements IUsuarios {
 
     UsuarioRepository mainRepository;
     PersonaRepository personaRepository;
+    private static final String NAMECLASS = "UsuarioService.class";
 
     @Inject
     public UsuarioService(UsuarioRepository mainRepository, PersonaRepository personaRepository) {
@@ -39,7 +40,7 @@ public class UsuarioService implements IUsuarios {
             return result;
         }
 
-        throw new NotFoundException("No se ha encontrado un usuario con el id:" + id);
+        throw new NotFoundException("No se ha encontrado un usuario con el id:" + id, NAMECLASS);
 
     }
 
@@ -47,13 +48,13 @@ public class UsuarioService implements IUsuarios {
     public boolean login(Usuario user) {
 
         Usuario usuario = mainRepository.login(user).orElseThrow(
-            () -> new NotFoundException("Nombre de usuario incorrecto.")
+            () -> new NotFoundException("Nombre de usuario incorrecto.", NAMECLASS)
         );
 
         try {
             return PasswordHasher.hashPassword(user.getContrasena(), user.getSalt()).equals(usuario.getContrasena());
         } catch (NoSuchAlgorithmException|InvalidKeySpecException e) {
-            throw new RuntimeException(e);
+            throw new HashPasswordException(e.getMessage(), NAMECLASS);
         }
 
     }
@@ -67,7 +68,7 @@ public class UsuarioService implements IUsuarios {
             return result;
         }
 
-        throw new NotFoundException("No se han encontrado usuarios almacenados");
+        throw new NotFoundException("No se han encontrado usuarios almacenados", NAMECLASS);
 
     }
 
@@ -104,7 +105,7 @@ public class UsuarioService implements IUsuarios {
                 }
 
             } catch (NoSuchAlgorithmException|InvalidKeySpecException e) {
-                throw new HashPasswordException(e.getMessage());
+                throw new HashPasswordException(e.getMessage(), NAMECLASS);
             }
 
             existente.setIdPerfil(usuario.getIdPerfil());
@@ -117,7 +118,7 @@ public class UsuarioService implements IUsuarios {
                 usuario.setSalt(salt);
                 usuario.setContrasena(hashedPassword);
             } catch (Exception e) {
-                throw new HashPasswordException(e.getMessage());
+                throw new HashPasswordException(e.getMessage(), NAMECLASS);
             }
             repoResult = mainRepository.save(usuario, "save");
         }
@@ -139,7 +140,7 @@ public class UsuarioService implements IUsuarios {
             mainRepository.deleteById(id);
         }
 
-        throw new NotFoundException("No se ha encontrado un perfil con el id:" + id);
+        throw new NotFoundException("No se ha encontrado un perfil con el id:" + id, NAMECLASS);
 
     }
 

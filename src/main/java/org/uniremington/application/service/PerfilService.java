@@ -29,7 +29,7 @@ public class PerfilService implements IPerfil {
             return result;
         }
 
-        throw new NotFoundException("No se ha encontrado un perfil con el id:" + id);
+        throw new NotFoundException("No se ha encontrado un perfil con el id:" + id, "PerfilService.class");
 
     }
 
@@ -42,7 +42,7 @@ public class PerfilService implements IPerfil {
             return result;
         }
 
-        throw new NotFoundException("No se han encontrado perfiles almacenados");
+        throw new NotFoundException("No se han encontrado perfiles almacenados", "PerfilService.class");
 
     }
 
@@ -76,7 +76,7 @@ public class PerfilService implements IPerfil {
             repository.deleteById(id);
         }
 
-        throw new NotFoundException("No se ha encontrado un perfil con el id:" + id);
+        throw new NotFoundException("No se ha encontrado un perfil con el id:" + id, "PerfilService.class");
 
     }
 }

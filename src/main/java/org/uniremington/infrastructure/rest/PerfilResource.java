@@ -51,7 +51,7 @@ public class PerfilResource {
         PerfilDto perfil = service.findById(id)
             .map(mapper::toDto)
             .orElseThrow(
-                () -> new NotFoundException("Perfil con ID " + id + " no encontrada")
+                () -> new NotFoundException("Perfil con ID " + id + " no encontrada", "PerfilResource.class")
             );
 
         ObjectMapper mapper = new ObjectMapper();
@@ -98,7 +98,7 @@ public class PerfilResource {
         service.findById(id)
                 .map(mapper::toDto)
                 .orElseThrow(
-                        () -> new NotFoundException("Perfil con ID " + id + " no encontrada")
+                        () -> new NotFoundException("Perfil con ID " + id + " no encontrada", "PerfilResource.class")
                 );
 
         service.deleteById(id);

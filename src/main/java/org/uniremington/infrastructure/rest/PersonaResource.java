@@ -51,7 +51,7 @@ public class PersonaResource {
         PersonaDto persona = service.findById(id)
             .map(mapper::toDto)
             .orElseThrow(
-                () -> new NotFoundException("Persona con ID " + id + " no encontrada")
+                () -> new NotFoundException("Persona con ID " + id + " no encontrada", "PersonaResource.class")
             );
 
         ObjectMapper mapper = new ObjectMapper();
@@ -98,7 +98,7 @@ public class PersonaResource {
         service.findById(id)
                 .map(mapper::toDto)
                 .orElseThrow(
-                        () -> new NotFoundException("Persona con ID " + id + " no encontrada")
+                        () -> new NotFoundException("Persona con ID " + id + " no encontrada", "PersonaResource.class")
                 );
 
         service.deleteById(id);

@@ -29,7 +29,7 @@ public class PersonaService implements IPersona {
             return result;
         }
 
-        throw new NotFoundException("No se ha encontrado una persona con el id:" + id);
+        throw new NotFoundException("No se ha encontrado una persona con el id:" + id, "PersonaService.class");
 
     }
 
@@ -42,7 +42,7 @@ public class PersonaService implements IPersona {
             return result;
         }
 
-        throw new NotFoundException("No se han encontrado personas almacenadas");
+        throw new NotFoundException("No se han encontrado personas almacenadas", "PersonaService.class");
 
     }
 
@@ -76,7 +76,7 @@ public class PersonaService implements IPersona {
             repository.deleteById(id);
         }
 
-        throw new NotFoundException("No se ha encontrado una persona con el id:" + id);
+        throw new NotFoundException("No se ha encontrado una persona con el id:" + id, "PersonaService.class");
 
     }
 
