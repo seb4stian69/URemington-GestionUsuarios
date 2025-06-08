@@ -20,4 +20,8 @@ public abstract class MicroServiceException extends RuntimeException {
         return new BaseError(origen, mensaje, Date.from(Instant.now()).toString());
     }
 
+    public static BaseError procesar(Exception ex, String origen) {
+        return new BaseError(origen, ex.getMessage(), Date.from(Instant.now()).toString());
+    }
+
 }
