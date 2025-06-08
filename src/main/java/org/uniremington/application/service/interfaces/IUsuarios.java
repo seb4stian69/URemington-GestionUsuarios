@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface IUsuarios {
     Optional<Usuario> findById(Long id);
-    Optional<Usuario> login(String user);
+    boolean login(Usuario user);
     List<Usuario> findAll();
     Usuario save(Usuario entity);
     void deleteById(Long id);

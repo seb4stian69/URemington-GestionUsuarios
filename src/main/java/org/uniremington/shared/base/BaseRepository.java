@@ -6,6 +6,6 @@ import java.util.Optional;
 public interface BaseRepository<T, ID> {
     Optional<T> findById(ID id);
     List<T> findAll();
-    T save(T entity);
+    T save(T entity, String action);
     void deleteById(ID id);
 }

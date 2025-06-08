@@ -9,7 +9,11 @@ import lombok.Setter;
 @RegisterForReflection
 @Data/**/@Getter
 @Setter
-public class SendEmailDto {
-    @NotBlank(message = "La descripcion no puede estar vacia")
+public class LoginDto {
+    @NotBlank(message = "El username no puede estar vacío")
     String username;
+    @NotBlank(message = "El password no puede estar vacío")
+    String password;
+    @NotBlank(message = "El salt no puede estar vacío")
+    String salt;
 }

@@ -9,9 +9,7 @@ import lombok.Setter;
 @RegisterForReflection
 @Data/**/@Getter
 @Setter
-public class LoginDTO {
-    @NotBlank(message = "El username no puede estar vacío")
+public class ResetPasswordDto {
+    @NotBlank(message = "La descripcion no puede estar vacia")
     String username;
-    @NotBlank(message = "El password no puede estar vacío")
-    String password;
 }

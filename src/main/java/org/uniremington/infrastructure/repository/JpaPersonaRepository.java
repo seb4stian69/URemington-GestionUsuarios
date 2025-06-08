@@ -11,15 +11,19 @@ import org.uniremington.infrastructure.entity.PersonaEntity;
 import org.uniremington.shared.util.PersonaMapper;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class JpaPersonaRepository implements PersonaRepository {
 
     @PersistenceContext EntityManager em;
 
-    @Inject /*->*/ PersonaMapper mapper;
+    PersonaMapper mapper;
+
+    @Inject JpaPersonaRepository(PersonaMapper mapper) {
+        this.mapper = mapper;
+    }
 
     @Override
     public Optional<Persona> findById(Long id) {
@@ -33,22 +37,16 @@ public class JpaPersonaRepository implements PersonaRepository {
                 .getResultList()
                 .stream()
                 .map(mapper::toModel)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
     @Transactional
-    public Persona save(Persona usuario) {
+    public Persona save(Persona usuario, String action) {
 
         PersonaEntity entity = mapper.toEntity(usuario);
 
-        if (entity.getId() == null) {
-            throw new IllegalArgumentException("La cédula no puede ser nula al guardar una persona");
-        }
-
-        PersonaEntity existing = em.find(PersonaEntity.class, entity.getId());
-
-        if (existing == null) {
+        if (Objects.equals(action, "save")) {
             em.persist(entity);
         } else {
             entity = em.merge(entity);
@@ -64,10 +62,8 @@ public class JpaPersonaRepository implements PersonaRepository {
     @Transactional
     public void deleteById(Long id) {
         PersonaEntity entity = em.find(PersonaEntity.class, id);
-        if (entity != null) {
-            entity.setEstado(false);
-            em.merge(entity);
-        }
+        entity.setEstado(false);
+        em.merge(entity);
     }
 
 }
