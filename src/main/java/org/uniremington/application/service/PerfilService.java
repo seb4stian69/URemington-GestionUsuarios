@@ -74,9 +74,9 @@ public class PerfilService implements IPerfil {
 
         if(existente.isPresent()){
             repository.deleteById(id);
+        }else{
+            throw new NotFoundException("No se ha encontrado un perfil con el id:" + id, "PerfilService.class");
         }
-
-        throw new NotFoundException("No se ha encontrado un perfil con el id:" + id, "PerfilService.class");
 
     }
 }
