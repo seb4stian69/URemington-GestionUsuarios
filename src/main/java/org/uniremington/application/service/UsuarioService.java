@@ -138,10 +138,11 @@ public class UsuarioService implements IUsuarios {
 
         if(existente.isPresent()){
             mainRepository.deleteById(id);
+        } else{
+            throw new NotFoundException("No se ha encontrado un perfil con el id:" + id, NAMECLASS);
+
         }
-
-        throw new NotFoundException("No se ha encontrado un perfil con el id:" + id, NAMECLASS);
-
+        
     }
 
     @Override
