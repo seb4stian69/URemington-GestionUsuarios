@@ -11,12 +11,10 @@ import org.uniremington.domain.repository.UsuarioRepository;
 import org.uniremington.infrastructure.entity.PerfilEntity;
 import org.uniremington.infrastructure.entity.PersonaEntity;
 import org.uniremington.infrastructure.entity.UsuarioEntity;
-import org.uniremington.shared.util.ApiResponse;
 import org.uniremington.shared.util.UsuarioMapper;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @ApplicationScoped
@@ -62,31 +60,33 @@ public class JpaUsuarioRepository implements UsuarioRepository {
     @Transactional
     public Usuario save(Usuario usuario, String action) {
 
-        UsuarioEntity entity = mapper.toEntity(usuario);
+        UsuarioEntity entity;
 
-        PersonaEntity persona = em.find(PersonaEntity.class ,usuario.getId());
+        if ("save".equals(action)) {
+            entity = mapper.toEntity(usuario);
+            em.persist(entity);
+        } else {
+            entity = mapper.toEntity(usuario);
+            entity = em.merge(entity); // evita persistir entidad duplicada
+        }
+
+        PersonaEntity persona = em.find(PersonaEntity.class, usuario.getId());
         persona.setUsuario(entity);
         entity.setPersona(persona);
 
         PerfilEntity perfil = em.find(PerfilEntity.class, Long.parseLong(usuario.getIdPerfil()));
         entity.setIdperfil(perfil);
 
-        if (Objects.equals(action, "save")) {
-            em.persist(entity);
-        } else {
-            entity = em.merge(entity);
-        }
-
         return new Usuario(
-            entity.getId(),
-            entity.getNombreUsuario(),
-            entity.getContrasena(),
-            String.valueOf(entity.getIdperfil().getId()),
-            entity.getSalt(),
-            entity.getEstado()
+                entity.getId(),
+                entity.getNombreUsuario(),
+                entity.getContrasena(),
+                String.valueOf(entity.getIdperfil().getId()),
+                entity.getSalt(),
+                entity.getEstado()
         );
-
     }
+
 
     @Override
     @Transactional
@@ -99,7 +99,7 @@ public class JpaUsuarioRepository implements UsuarioRepository {
     }
 
     @Override
-    public Optional<Usuario> login(Usuario user) {
+    public Optional<Usuario> getByUsername(Usuario user) {
 
         try {
 
@@ -118,19 +118,6 @@ public class JpaUsuarioRepository implements UsuarioRepository {
             return Optional.empty();
         }
 
-    }
-
-    @Override
-    public ApiResponse resetPassword(String username, Usuario user, String correo, String newPassword) {
-        try {
-            user.setContrasena(newPassword);
-            user.setIdPerfil(user.getId().toString());
-            this.save(user, "update");
-            return new ApiResponse(newPassword, true);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ApiResponse("Ocurrió un error al restablecer la contraseña.", false);
-        }
     }
 
 }

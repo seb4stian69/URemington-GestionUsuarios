@@ -14,6 +14,7 @@ import jakarta.ws.rs.core.Response;
 import org.uniremington.application.dto.LoginDto;
 import org.uniremington.application.dto.ResetPasswordDto;
 import org.uniremington.application.dto.UsuarioDto;
+import org.uniremington.application.service.MailerService;
 import org.uniremington.application.service.UsuarioService;
 import org.uniremington.domain.model.Usuario;
 import org.uniremington.shared.base.BaseError;
@@ -21,7 +22,6 @@ import org.uniremington.shared.base.BaseRequest;
 import org.uniremington.shared.base.BaseResponse;
 import org.uniremington.shared.exception.MicroServiceException;
 import org.uniremington.shared.exception.NotFoundException;
-import org.uniremington.shared.util.ApiResponse;
 import org.uniremington.shared.util.UsuarioMapper;
 
 import java.util.HashMap;
@@ -35,10 +35,12 @@ public class UsuarioResource {
     private static final String RESPONSE = "response";
 
     UsuarioService service;
+    MailerService mailerService;
     UsuarioMapper mapper;
 
-    @Inject UsuarioResource(UsuarioService service, UsuarioMapper mapper){
+    @Inject UsuarioResource(UsuarioService service, UsuarioMapper mapper, MailerService mailerService){
         this.service = service;
+        this.mailerService = mailerService;
         this.mapper = mapper;
     }
 
@@ -98,8 +100,10 @@ public class UsuarioResource {
 
         try {
             if (service.login(requestUser)) {
+                Usuario getUserData = service.getByUsername(request.getBody().getUsername());
                 Map<String, String> body = new HashMap<>();
                 body.put(RESPONSE, "Login exitoso");
+                body.put("perfil", getUserData.getIdPerfil());
                 response = new BaseResponse<>(request.getHeader(), body, new BaseError());
                 return Response.ok(response).build();
             } else {
@@ -191,27 +195,25 @@ public class UsuarioResource {
         BaseResponse<Map<String, String>> response;
 
         try {
-            ApiResponse result = service.resetPassword(body.getUsername());
+            Map<String, Object> result = service.resetPassword(body.getUsername());
 
-            if (result.getMessage().equalsIgnoreCase("Usuario no encontrado.")
-                    || result.getMessage().contains("no tiene un correo")) {
-                BaseError error = new BaseError("404", result.getMessage(), NAMECLASS);
-                response = new BaseResponse<>(null, error);
-                return Response.status(Response.Status.NOT_FOUND).entity(response).build();
-            }
+            Usuario usuario = (Usuario) result.get("user");
 
-            if (!result.isSuccess()) {
-                BaseError error = new BaseError("400", result.getMessage(), NAMECLASS);
-                response = new BaseResponse<>(null, error);
-                return Response.status(Response.Status.BAD_REQUEST).entity(response).build();
-            }
+            this.mailerService.sendReset(
+                (String) result.get("mail"),
+                usuario.getNombreUsuario(),
+                (String) result.get("pass")
+            );
 
             Map<String, String> bodyMap = new HashMap<>();
-            bodyMap.put(RESPONSE, result.getMessage());
+            bodyMap.put(RESPONSE,"Cambio exitoso!");
 
             response = new BaseResponse<>(null, bodyMap, new BaseError());
             return Response.ok(response).build();
 
+        } catch (MicroServiceException ex) {
+            response = new BaseResponse<>(null, ex.getBaseError());
+            return Response.status(ex.getCodigoHttp()).entity(response).build();
         } catch (Exception ex) {
             BaseError error = MicroServiceException.procesar(ex, NAMECLASS);
             response = new BaseResponse<>(null, error);
