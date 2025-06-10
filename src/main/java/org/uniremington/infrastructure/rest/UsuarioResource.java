@@ -125,9 +125,10 @@ public class UsuarioResource {
     @PermitAll
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response create(UsuarioDto dto) {
+    public Response create(BaseRequest<UsuarioDto> request) {
 
         BaseResponse<UsuarioDto> response;
+        UsuarioDto dto = request.getBody();
 
         try {
             if (dto.getIdPersona() == null) {
@@ -191,8 +192,10 @@ public class UsuarioResource {
     @Path("/reset-password")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response sendMail(ResetPasswordDto body) {
+    public Response sendMail(BaseRequest<ResetPasswordDto> request) {
         BaseResponse<Map<String, String>> response;
+        ResetPasswordDto body = request.getBody();
+
 
         try {
             Map<String, Object> result = service.resetPassword(body.getUsername());
