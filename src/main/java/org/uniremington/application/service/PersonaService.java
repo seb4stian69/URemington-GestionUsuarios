@@ -74,9 +74,10 @@ public class PersonaService implements IPersona {
 
         if(existente.isPresent()){
             repository.deleteById(id);
-        }
+        }else{
+            throw new NotFoundException("No se ha encontrado una persona con el id:" + id, "PersonaService.class");
 
-        throw new NotFoundException("No se ha encontrado una persona con el id:" + id, "PersonaService.class");
+        }
 
     }
 

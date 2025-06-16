@@ -1,9 +1,9 @@
 package org.uniremington.application.service.interfaces;
 
 import org.uniremington.domain.model.Usuario;
-import org.uniremington.shared.util.ApiResponse;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface IUsuarios {
@@ -11,6 +11,7 @@ public interface IUsuarios {
     boolean login(Usuario user);
     List<Usuario> findAll();
     Usuario save(Usuario entity);
+    Usuario getByUsername(String username);
     void deleteById(Long id);
-    ApiResponse resetPassword(String username);
+    Map<String, Object> resetPassword(String username);
 }

@@ -1,9 +1,11 @@
 package org.uniremington.application.service;
 
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.uniremington.application.service.interfaces.IMailer;
 import org.uniremington.domain.repository.MailerRepository;
 
+@ApplicationScoped
 public class MailerService implements IMailer {
 
     MailerRepository repository;
@@ -13,7 +15,7 @@ public class MailerService implements IMailer {
     }
 
     @Override
-    public void sendReset(String template, String message, String addreses, String username, String password) {
+    public void sendReset(String addreses, String username, String password) {
 
         String html = "<html>\n" +
                 "  <body style=\"font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;\">\n" +
@@ -26,7 +28,7 @@ public class MailerService implements IMailer {
                 "  </body>\n" +
                 "</html>";
 
-        repository.send(html, message, addreses);
+        repository.send(html, "AgroApp: Cambio de password exitoso", addreses);
 
     }
 
