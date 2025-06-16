@@ -60,22 +60,26 @@ public class JpaUsuarioRepository implements UsuarioRepository {
     @Transactional
     public Usuario save(Usuario usuario, String action) {
 
-        UsuarioEntity entity;
+        UsuarioEntity entity = mapper.toEntity(usuario);
+
+        // Obtener Persona y Perfil desde sus respectivos IDs (evitar usar usuario.getId() como id de persona)
+        Long idPersona = usuario.getId(); // Asegúrate de que este getter exista y esté correcto
+        Long idPerfil = Long.parseLong(usuario.getIdPerfil());
+
+        PersonaEntity persona = em.find(PersonaEntity.class, idPersona);
+        PerfilEntity perfil = em.find(PerfilEntity.class, idPerfil);
+
+        // Asignar relaciones antes de persistir/mergear
+        entity.setPersona(persona);
+        persona.setUsuario(entity); // Si es bidireccional
+
+        entity.setIdperfil(perfil);
 
         if ("save".equals(action)) {
-            entity = mapper.toEntity(usuario);
             em.persist(entity);
         } else {
-            entity = mapper.toEntity(usuario);
-            entity = em.merge(entity); // evita persistir entidad duplicada
+            entity = em.merge(entity);
         }
-
-        PersonaEntity persona = em.find(PersonaEntity.class, usuario.getId());
-        persona.setUsuario(entity);
-        entity.setPersona(persona);
-
-        PerfilEntity perfil = em.find(PerfilEntity.class, Long.parseLong(usuario.getIdPerfil()));
-        entity.setIdperfil(perfil);
 
         return new Usuario(
                 entity.getId(),
@@ -86,6 +90,7 @@ public class JpaUsuarioRepository implements UsuarioRepository {
                 entity.getEstado()
         );
     }
+
 
 
     @Override
