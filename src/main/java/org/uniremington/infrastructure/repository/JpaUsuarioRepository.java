@@ -11,6 +11,7 @@ import org.uniremington.domain.repository.UsuarioRepository;
 import org.uniremington.infrastructure.entity.PerfilEntity;
 import org.uniremington.infrastructure.entity.PersonaEntity;
 import org.uniremington.infrastructure.entity.UsuarioEntity;
+import org.uniremington.shared.exception.NotFoundException;
 import org.uniremington.shared.util.UsuarioMapper;
 
 import java.util.ArrayList;
@@ -59,28 +60,51 @@ public class JpaUsuarioRepository implements UsuarioRepository {
     @Override
     @Transactional
     public Usuario save(Usuario usuario, String action) {
-
-        UsuarioEntity entity = mapper.toEntity(usuario);
-
-        // Obtener Persona y Perfil desde sus respectivos IDs (evitar usar usuario.getId() como id de persona)
-        Long idPersona = usuario.getId(); // Asegúrate de que este getter exista y esté correcto
+        Long idPersona = usuario.getId();
         Long idPerfil = Long.parseLong(usuario.getIdPerfil());
 
+        // Recuperar relaciones necesarias
         PersonaEntity persona = em.find(PersonaEntity.class, idPersona);
-        PerfilEntity perfil = em.find(PerfilEntity.class, idPerfil);
-
-        // Asignar relaciones antes de persistir/mergear
-        entity.setPersona(persona);
-        persona.setUsuario(entity); // Si es bidireccional
-
-        entity.setIdperfil(perfil);
-
-        if ("save".equals(action)) {
-            em.persist(entity);
-        } else {
-            entity = em.merge(entity);
+        if (persona == null) {
+            throw new NotFoundException("Persona con ID " + idPersona + " no encontrada", JpaUsuarioRepository.class.getSimpleName());
         }
 
+        PerfilEntity perfil = em.find(PerfilEntity.class, idPerfil);
+        if (perfil == null) {
+            throw new NotFoundException("Perfil con ID " + idPerfil + " no encontrado", JpaUsuarioRepository.class.getSimpleName());
+        }
+
+        UsuarioEntity entity;
+
+        if ("save".equalsIgnoreCase(action)) {
+            // CREAR nueva entidad
+            entity = mapper.toEntity(usuario);
+        } else {
+            // ACTUALIZAR: obtener instancia gestionada y actualizar sus campos
+            entity = em.find(UsuarioEntity.class, idPersona);
+            if (entity == null) {
+                throw new NotFoundException("Usuario con ID " + idPersona + " no encontrado", JpaUsuarioRepository.class.getSimpleName());
+            }
+
+            // Solo actualizas los campos que cambian
+            entity.setNombreUsuario(usuario.getNombreUsuario());
+            entity.setContrasena(usuario.getContrasena());
+            entity.setSalt(usuario.getSalt());
+            entity.setEstado(usuario.getEstado());
+        }
+
+        // relaciones
+        entity.setPersona(persona);
+        entity.setIdperfil(perfil);
+
+        // Bidireccionalidad
+        persona.setUsuario(entity);
+
+        if ("save".equalsIgnoreCase(action)) {
+            em.persist(entity);
+        } // No necesitas merge si ya estás trabajando con la instancia gestionada
+
+        // Retornar DTO
         return new Usuario(
                 entity.getId(),
                 entity.getNombreUsuario(),
